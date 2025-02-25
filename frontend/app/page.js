@@ -9,6 +9,8 @@ export default function PDFUploader() {
   const [summary, setSummary] = useState("");
   const [questions, setQuestions] = useState([]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const handleUpload = async (event) => {
     const file = event.target.files[0];
     const formData = new FormData();
@@ -16,7 +18,7 @@ export default function PDFUploader() {
 
     // Send file to FastAPI backend
     const response = await axios.post(
-      "http://localhost:8000/upload-pdf",
+      `${apiUrl}/upload-pdf`,
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },

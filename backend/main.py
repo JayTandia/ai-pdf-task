@@ -21,9 +21,9 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-GEMINI_API = os.getenv("GEMINI_API")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-genai.configure(api_key=GEMINI_API)
+genai.configure(api_key=GEMINI_API_KEY)
 
 
 UPLOAD_DIR = "backend/uploads"
@@ -90,3 +90,11 @@ class ChatRequest(BaseModel):
 async def process_chat(request: ChatRequest):  
     answer = await chat(request.message, request.context)
     return {"message": answer}
+
+
+def run():
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+if __name__ == "__main__":
+    run()

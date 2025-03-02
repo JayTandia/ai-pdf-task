@@ -1,69 +1,73 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
-import fitz  # PyMuPDF for PDF text extraction
+import fitz  
 import google.generativeai as genai
-from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
-# Initialize FastAPI
+
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow frontend URL
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
 )
 
-# Configure Gemini AI
+
 genai.configure(api_key="AIzaSyCgiobpaQEnRO3zVdu2CyHmQxxp89v49Qc")
 
-# Create 'uploads' folder to store PDFs
-UPLOAD_DIR = "uploads"
+
+UPLOAD_DIR = "backend/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Serve static files (PDFs) so they can be accessed via URL
+
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
-# Function to extract text from a PDF
+
 def extract_text_from_pdf(pdf_path):
     doc = fitz.open(pdf_path)
-    text = ""
+    text = []
     for page in doc:
-        text += page.get_text("text")
-    return text
+        text.append(page.get_text("text"))
+    return "\n".join(text)  
 
-# Function to generate summary using Gemini API
+
 async def get_summary(text):
     model = genai.GenerativeModel("gemini-1.5-pro")
-    summary_prompt = f"Summarize the following text in 100 words:\n{text}"
-    
+    summary_prompt = f"Summarize the following text in 100 words:\n{text[:5000]}"  # Limit text to avoid API overload
     response = model.generate_content(summary_prompt)
     return response.text.strip() if response.text else "Summary not available."
 
-# Function to generate questions using Gemini API
+
 async def get_questions(text):
     model = genai.GenerativeModel("gemini-1.5-pro")
-    questions_prompt = f"Generate 5 thought-provoking questions based on the following text:\n{text}"
-    
+    questions_prompt = f"Generate 5 thought-provoking questions based on the following text:\n{text[:5000]}"
     response = model.generate_content(questions_prompt)
     return response.text.split("\n") if response.text else ["No questions generated."]
 
-# API endpoint to upload PDF
+
+async def chat(message, context):
+    model = genai.GenerativeModel("gemini-1.5-pro")
+    response = model.generate_content(f"Answer the following question based on the context provided:\n{message}\n\nContext: {context}")
+    return response.text.strip() if response.text else "No answer generated."
+
+
 @app.post("/upload-pdf")
 async def upload_pdf(file: UploadFile = File(...)):
     file_path = os.path.join(UPLOAD_DIR, file.filename)
 
-    # Save PDF file
+    
     with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+        shutil.copyfileobj(file.file, buffer, 1024 * 1024)  
 
-    # Extract text from PDF
     text = extract_text_from_pdf(file_path)
-
-    # Generate summary and questions asynchronously
+    print("text",text)
+    
     summary = await get_summary(text)
     questions = await get_questions(text)
 
@@ -72,3 +76,13 @@ async def upload_pdf(file: UploadFile = File(...)):
         "summary": summary,
         "questions": questions
     }
+
+
+class ChatRequest(BaseModel):
+    message: str
+    context: str
+
+@app.post("/chat")
+async def process_chat(request: ChatRequest):  
+    answer = await chat(request.message, request.context)
+    return {"message": answer}

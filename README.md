@@ -1,0 +1,40 @@
+# Project Setup Guide
+
+## 1. Configure the Gemini API Key
+Before running the project, update the Gemini API key in the `.env` file inside the backend folder.
+
+1. Open the `.env` file inside the `backend` directory.
+2. Update the API key:
+   ```
+   GEMINI_API=your_api_key
+   ```
+
+## 2. Run the Backend Server
+Navigate to the `backend` folder and start the FastAPI server using `uvicorn`:
+
+```sh
+cd backend
+uvicorn main:app --reload
+```
+
+This will start the backend server on `http://127.0.0.1:8000`.
+
+## 3. Run the Frontend Application
+After starting the backend, navigate to the `frontend` folder and start the frontend development server:
+
+```sh
+cd frontend
+npm run dev
+```
+
+This will start the frontend on `http://localhost:3000`.
+
+## Notes
+- Ensure you have `Node.js` and `npm` installed for the frontend.
+- Make sure Python and `uvicorn` are installed for the backend.
+- If you face dependency issues, install the necessary packages using:
+  - Backend: `pip install -r requirements.txt`
+  - Frontend: `npm install`
+
+Now, you are ready to use the project! 🚀
+

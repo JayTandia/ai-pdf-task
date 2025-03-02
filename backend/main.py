@@ -6,6 +6,9 @@ import os
 import fitz  
 import google.generativeai as genai
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 app = FastAPI()
@@ -18,8 +21,9 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+GEMINI_API = os.getenv("GEMINI_API")
 
-genai.configure(api_key="AIzaSyCgiobpaQEnRO3zVdu2CyHmQxxp89v49Qc")
+genai.configure(api_key=GEMINI_API)
 
 
 UPLOAD_DIR = "backend/uploads"

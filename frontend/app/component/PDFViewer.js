@@ -10,11 +10,19 @@ pdfjs.GlobalWorkerOptions.workerSrc = "/pdfjs/pdf.worker.min.js";
 
 const PDFViewer = ({setSelectedText, pdfUrl}) => {
   const [numPages, setNumPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
+    setIsLoading(false);
   };
+
+  const onDocumentLoadError = (error) => {
+    console.error("Error loading PDF:", error);
+    setIsLoading(false);
+  };
+
   const [tempSelection, setTempSelection] = useState("");
   const [showButton, setShowButton] = useState(false);
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
@@ -79,7 +87,17 @@ const PDFViewer = ({setSelectedText, pdfUrl}) => {
         </button>
       )}
       
-      <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+      {isLoading && (
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+      )}
+      
+      <Document 
+        file={pdfUrl} 
+        onLoadSuccess={onDocumentLoadSuccess}
+        onLoadError={onDocumentLoadError}
+      >
         {Array.from({ length: numPages }, (_, index) => (
           <Page
             key={index}

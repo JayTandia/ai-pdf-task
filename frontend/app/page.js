@@ -125,11 +125,6 @@ export default function PDFUploader() {
             ></iframe>
           )} */}
 
-          {/* Third method: Using PDF.js */}
-          {/* {pdfUrl && <PDFViewer2 pdfUrl={pdfUrl} setSelectedText={setSelectedText} />} */}
-
-          {/* Fourth method: Using pdfjs-dist */}
-          {/* {pdfUrl && <PDFViewer3 pdfUrl={pdfUrl} setSelectedText={setSelectedText} /> } */}
         </div>
 
         <div className="w-1/2 flex flex-col space-y-6">

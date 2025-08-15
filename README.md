@@ -1,4 +1,3 @@
-```markdown
 # 🤖📄 AI-PDF: Intelligent Document Interaction with Gemini AI
 
 Unlock the power of AI for your PDF documents with AI-PDF! This project leverages the Gemini AI SDK to provide intelligent summarization, question generation, and conversational interaction with your PDFs. Built with a modern tech stack of Next.js and FastAPI, AI-PDF offers a seamless and intuitive user experience. This project allows users to upload a PDF document, get a concise summary of its content, generate thought-provoking questions based on the text, and engage in a conversational chatbot experience grounded in the PDF's information.
@@ -14,23 +13,30 @@ This project is designed for:
 Here's a high-level architecture diagram illustrating the system's components and data flow:
 
 ```mermaid
-graph LR
-    A[Frontend (Next.js)] -- Upload PDF --> B(Backend (FastAPI));
-    B -- Store PDF --> C[(Uploads Directory)];
-    B -- Extract Text --> D{PDF Text Extractor (fitz)};
-    D --> E((PDF Text));
-    E --> F[Gemini AI SDK];
-    F -- Summarize --> G(Summary);
-    F -- Generate Questions --> H(Questions);
-    F -- Chat Interaction --> I(Chatbot Response);
-    G --> B;
-    H --> B;
-    I --> B;
-    B -- Return Results --> A;
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#ccf,stroke:#333,stroke-width:2px
-    style F fill:#ccf,stroke:#333,stroke-width:2px
-```
+    graph LR
+    A[Frontend: Next.js] -- "Upload PDF" --> B[Backend: FastAPI]
+    B -- "Store PDF" --> C[(Uploads Directory)]
+    B -- "Extract Text" --> D{PDF Text Extractor: fitz}
+    D --> E[PDF Text]
+    E --> F[Gemini AI SDK]
+    F -- "Summarize" --> G[Summary]
+    F -- "Generate Questions" --> H[Questions]
+    F -- "Chat Interaction" --> I[Chatbot Response]
+    G --> B
+    H --> B
+    I --> B
+    B -- "Return Results" --> A
+    
+    style A fill:#fce8f9,stroke:#333,stroke-width:1px
+    style B fill:#e8f0fc,stroke:#333,stroke-width:1px
+    style C fill:#f0f0f0,stroke:#333,stroke-width:1px
+    style D fill:#fef7e0,stroke:#333,stroke-width:1px
+    style E fill:#fffaf2,stroke:#333,stroke-width:1px
+    style F fill:#e8f0fc,stroke:#333,stroke-width:1px
+    style G fill:#e6f4ea,stroke:#333,stroke-width:1px
+    style H fill:#fff4e5,stroke:#333,stroke-width:1px
+    style I fill:#fce8e6,stroke:#333,stroke-width:1px
+ ```
 
 **Key Architectural Decisions:**
 
@@ -302,9 +308,4 @@ Currently, there are no automated tests. However, thorough testing should be imp
 *   Provide a clear and detailed description of the issue.
 *   Include steps to reproduce the issue (if possible).
 *   Include any relevant error messages or logs.
-*   Specify your environment (operating system, Python version, Node.js version, etc.).
 
-### Code of Conduct
-
-Please adhere to the Contributor Covenant Code of Conduct.
-```
